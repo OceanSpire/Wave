@@ -13,6 +13,7 @@ val paperMavenPublicUrl = "https://repo.papermc.io/repository/maven-public/"
 
 repositories {
     mavenCentral()
+    maven("https://jitpack.io")
     maven(paperMavenPublicUrl) {
         content { onlyForConfigurations(configurations.paperclip.name) }
     }
@@ -22,11 +23,20 @@ dependencies {
     remapper("net.fabricmc:tiny-remapper:0.8.6:fat") // Must be kept in sync with upstream
     decompiler("net.minecraftforge:forgeflower:2.0.605.1") // Must be kept in sync with upstream
     paperclip("io.papermc:paperclip:3.0.2") // You probably want this to be kept in sync with upstream
+    implementation ("me.carleslc.Simple-YAML:Simple-Yaml:1.8.3")
 }
 
 allprojects {
     apply(plugin = "java")
     apply(plugin = "maven-publish")
+    repositories {
+        mavenCentral()
+        maven("https://jitpack.io")
+        maven(paperMavenPublicUrl)
+    }
+    dependencies {
+        implementation ("me.carleslc.Simple-YAML:Simple-Yaml:1.8.3")
+    }
 
     java {
         toolchain {
@@ -36,6 +46,14 @@ allprojects {
 }
 
 subprojects {
+    repositories {
+        mavenCentral()
+        maven("https://jitpack.io")
+        maven(paperMavenPublicUrl)
+    }
+    dependencies {
+        implementation ("me.carleslc.Simple-YAML:Simple-Yaml:1.8.3")
+    }
     tasks.withType<JavaCompile> {
         options.encoding = Charsets.UTF_8.name()
         options.release.set(17)

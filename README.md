@@ -1,43 +1,26 @@
-# ForkTest - A Paper fork, using paperweight
+<div align="center">
 
-This is an example project, showcasing how to setup a fork of Paper (or any other fork using paperweight), using paperweight.
+![image](https://cdn.discordapp.com/attachments/1071100318357667975/1085182480409182228/g8.png)
 
-The files of most interest are
-- build.gradle.kts
-- settings.gradle.kts
-- gradle.properties
+### Wave a Server Platform for Minecraft: Java Edition based on [Plazma](https://github.com/PlazmaMC/Plazma)
+#### used by the OceanSpire Server Network
 
-When updating upstream, be sure to keep the dependencies noted in `build.gradle.kts` in sync with upstream.
-It's also a good idea to use the same version of the Gradle wrapper as upstream.
 
-## Tasks
 
-```
-Paperweight tasks
------------------
-applyApiPatches
-applyPatches
-applyServerPatches
-cleanCache - Delete the project setup cache and task outputs.
-createMojmapBundlerJar - Build a runnable bundler jar
-createMojmapPaperclipJar - Build a runnable paperclip jar
-createReobfBundlerJar - Build a runnable bundler jar
-createReobfPaperclipJar - Build a runnable paperclip jar
-generateDevelopmentBundle
-rebuildApiPatches
-rebuildPatches
-rebuildServerPatches
-reobfJar - Re-obfuscate the built jar to obf mappings
-runDev - Spin up a non-relocated Mojang-mapped test server
-runReobf - Spin up a test server from the reobfJar output jar
-runShadow - Spin up a test server from the shadowJar archiveFile
-```
+[![WIP](https://img.shields.io/badge/Work%20In%20Progress-red?style=for-the-badge)](README.md)
 
-## Branches
+</div>
 
-Each branch of this project represents an example:
+## ⚠️ Warning
+- Wave may cause **<u>unexpected problems</u>**, so **don't use** it in production server!
 
- - [`main` is the standard example](https://github.com/PaperMC/paperweight-examples/tree/main)
- - [`submodules` shows how paperweight can be applied on a fork using the more traditional git submodule system](https://github.com/PaperMC/paperweight-examples/tree/submodules)
- - [`mojangapi` shows how a fork could patch arbitrary non-git directories (such as `Paper-MojangAPI`)](https://github.com/PaperMC/paperweight-examples/tree/mojangapi)
- - [`submodules-mojang` shows the same as `mojangapi`, but on the git submodules setup from `submodules`](https://github.com/PaperMC/paperweight-examples/tree/submodules-mojangapi)
+## 💬 About Wave...
+- **Wave** is an upstream fork of **[Plazma](https://github.com/PlazmaMC/Plazma)**
+- Compatible and effective patches from other bukkits and mods
+
+## ⚙️ Features
+- **Based on [Paper](https://github.com/PaperMC/Paper)** - Most plugins of Bukkit, Craft Bukkit, Spigot, and Paper are available
+- **Including [Pufferfish](https://github.com/pufferfish-gg/Pufferfish) and [Purpur](https://github.com/PurpurMC/Purpur)** - Provides multiple optimizations and customizations
+
+## ⚖️ License
+- This project and all patches are licensed under the [MIT license](LICENSE.md) unless otherwise noted in the patch headers.
