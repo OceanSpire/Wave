@@ -1,0 +1,19 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: TominoLP <erfinder.tom@gmail.com>
+Date: Wed, 15 Mar 2023 13:59:44 +0100
+Subject: [PATCH] Build-Fix
+
+
+diff --git a/build.gradle.kts b/build.gradle.kts
+index 30b9bd48b5804b5e75ba464099663ca17d7e1cae..c858d124f1c5e273d539b07ae7f58a567a382218 100644
+--- a/build.gradle.kts
++++ b/build.gradle.kts
+@@ -7,7 +7,7 @@ plugins {
+ }
+ 
+ dependencies {
+-    implementation(project(":plazma-api")) // Pufferfish // Purpur // Plazma
++    implementation(project(":wave-api")) // Pufferfish // Purpur // Plazma
+     // Pufferfish start
+     implementation("io.papermc.paper:paper-mojangapi:1.19.3-R0.1-SNAPSHOT") {
+         exclude("io.papermc.paper", "paper-api")
