@@ -5,6 +5,6 @@ pluginManagement {
     }
 }
 
-rootProject.name = "forktest"
+rootProject.name = "wave"
 
-include("forktest-api", "forktest-server")
+include("wave-api", "wave-server")
