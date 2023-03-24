@@ -1,42 +1,31 @@
+import io.papermc.paperweight.patcher.*
+import io.papermc.paperweight.util.*
+import io.papermc.paperweight.util.constants.PAPERCLIP_CONFIG
+
 plugins {
     java
     `maven-publish`
-
-    // Nothing special about this, just keep it up to date
-    id("com.github.johnrengelman.shadow") version "7.1.2" apply false
-
-    // In general, keep this version in sync with upstream. Sometimes a newer version than upstream might work, but an older version is extremely likely to break.
-    id("io.papermc.paperweight.patcher") version "1.4.0"
+    id("com.github.johnrengelman.shadow") version "8.1.1" apply false
+    id("io.papermc.paperweight.patcher") version "1.5.3"
 }
-
-val paperMavenPublicUrl = "https://repo.papermc.io/repository/maven-public/"
 
 repositories {
     mavenCentral()
-    maven("https://jitpack.io")
-    maven(paperMavenPublicUrl) {
-        content { onlyForConfigurations(configurations.paperclip.name) }
+    maven("https://papermc.io/repo/repository/maven-public/") {
+        content {
+            onlyForConfigurations(PAPERCLIP_CONFIG)
+        }
     }
 }
 
 dependencies {
-    remapper("net.fabricmc:tiny-remapper:0.8.6:fat") // Must be kept in sync with upstream
-    decompiler("net.minecraftforge:forgeflower:2.0.605.1") // Must be kept in sync with upstream
-    paperclip("io.papermc:paperclip:3.0.2") // You probably want this to be kept in sync with upstream
-    implementation ("me.carleslc.Simple-YAML:Simple-Yaml:1.8.3")
+    remapper("net.fabricmc:tiny-remapper:0.8.6:fat")
+    decompiler("net.minecraftforge:forgeflower:2.0.605.2")
+    paperclip("io.papermc:paperclip:3.0.3")
 }
 
-allprojects {
+subprojects {
     apply(plugin = "java")
-    apply(plugin = "maven-publish")
-    repositories {
-        mavenCentral()
-        maven("https://jitpack.io")
-        maven(paperMavenPublicUrl)
-    }
-    dependencies {
-        implementation ("me.carleslc.Simple-YAML:Simple-Yaml:1.8.3")
-    }
 
     java {
         toolchain {
@@ -46,29 +35,36 @@ allprojects {
 }
 
 subprojects {
-    repositories {
-        mavenCentral()
-        maven("https://jitpack.io")
-        maven(paperMavenPublicUrl)
-    }
-    dependencies {
-        implementation ("me.carleslc.Simple-YAML:Simple-Yaml:1.8.3")
-    }
-    tasks.withType<JavaCompile> {
-        options.encoding = Charsets.UTF_8.name()
+    tasks.withType<JavaCompile>().configureEach {
+        options.encoding = "UTF-8"
         options.release.set(17)
     }
+
     tasks.withType<Javadoc> {
         options.encoding = Charsets.UTF_8.name()
     }
+
     tasks.withType<ProcessResources> {
         filteringCharset = Charsets.UTF_8.name()
     }
 
+    tasks.withType<Test> {
+        minHeapSize = "2g"
+        maxHeapSize = "2g"
+    }
+
     repositories {
         mavenCentral()
-        maven(paperMavenPublicUrl)
+        maven("https://oss.sonatype.org/content/groups/public/")
+        maven("https://papermc.io/repo/repository/maven-public/")
+        maven("https://ci.emc.gs/nexus/content/groups/aikar/")
+        maven("https://repo.aikar.co/content/groups/aikar")
+        maven("https://repo.md-5.net/content/repositories/releases/")
+        maven("https://hub.spigotmc.org/nexus/content/groups/public/")
+        maven("https://jitpack.io")
+        maven("https://oss.sonatype.org/content/repositories/snapshots/")
     }
+
 }
 
 paperweight {
@@ -91,48 +87,40 @@ paperweight {
             serverOutputDir.set(layout.projectDirectory.dir("wave-server"))
         }
     }
+}
 
-//
-// Everything below here is optional if you don't care about publishing API or dev bundles to your repository
-//
+tasks.register("updateUpstream") {
+    dependsOn("updateUpstreamCommit")
+    dependsOn("applyPatches")
+}
 
-    tasks.generateDevelopmentBundle {
-        apiCoordinates.set("com.example.paperfork:forktest-api")
-        mojangApiCoordinates.set("io.papermc.paper:paper-mojangapi")
-        libraryRepositories.set(
-            listOf(
-                "https://repo.maven.apache.org/maven2/",
-                paperMavenPublicUrl,
-                // "https://my.repo/", // This should be a repo hosting your API (in this example, 'com.example.paperfork:forktest-api')
-            )
+tasks.register("updateUpstreamCommit") {
+    // Update the purpurRef in gradle.properties to be the latest commit.
+    val tempDir = layout.cacheDir("plazmaRefLatest");
+    val file = "gradle.properties";
+
+    doFirst {
+        data class GithubCommit(
+            val sha: String
         )
-    }
 
-    allprojects {
-        // Publishing API:
-        // ./gradlew :ForkTest-API:publish[ToMavenLocal]
-        publishing {
-            repositories {
-                maven {
-                    name = "myRepoSnapshots"
-                    url = uri("https://my.repo/")
-                    // See Gradle docs for how to provide credentials to PasswordCredentials
-                    // https://docs.gradle.org/current/samples/sample_publishing_credentials.html
-                    credentials(PasswordCredentials::class)
-                }
+        val plazmaLatestCommitJson = layout.cache.resolve("plazmaLatestCommit.json");
+        download.get().download("https://api.github.com/repos/PlazmaMC/Plazma/commits/master", plazmaLatestCommitJson);
+        val plazmaLatestCommit = gson.fromJson<paper.libs.com.google.gson.JsonObject>(plazmaLatestCommitJson)["sha"].asString;
+
+        copy {
+            from(file)
+            into(tempDir)
+            filter { line: String ->
+                line.replace("plazmaCommit = .*".toRegex(), "plazmaCommit = $plazmaLatestCommit")
             }
         }
     }
 
-    publishing {
-        // Publishing dev bundle:
-        // ./gradlew publishDevBundlePublicationTo(MavenLocal|MyRepoSnapshotsRepository) -PpublishDevBundle
-        if (project.hasProperty("publishDevBundle")) {
-            publications.create<MavenPublication>("devBundle") {
-                artifact(tasks.generateDevelopmentBundle) {
-                    artifactId = "dev-bundle"
-                }
-            }
+    doLast {
+        copy {
+            from(tempDir.file("gradle.properties"))
+            into(project.file(file).parent)
         }
     }
 }

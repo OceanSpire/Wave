@@ -1,0 +1,19 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: TominoLP <erfinder.tom@gmail.com>
+Date: Fri, 24 Mar 2023 17:27:33 +0100
+Subject: [PATCH] build-fix
+
+
+diff --git a/build.gradle.kts b/build.gradle.kts
+index e4de94641d33b3deadc44bbb5f23f666d79737ea..0c282efeac4928925711c377ffec41f57bd4a936 100644
+--- a/build.gradle.kts
++++ b/build.gradle.kts
+@@ -7,7 +7,7 @@ plugins {
+ }
+ 
+ dependencies {
+-    implementation(project(":plazma-api")) // Purpur
++    implementation(project(":wave-api")) // Purpur
+     implementation("io.papermc.paper:paper-mojangapi:1.19.4-R0.1-SNAPSHOT") // Purpur
+     // Paper start
+     implementation("org.jline:jline-terminal-jansi:3.21.0")
