@@ -21,6 +21,7 @@
 ## ⚙️ Features
 - **Based on [Paper](https://github.com/PaperMC/Paper)** - Most plugins of Bukkit, Craft Bukkit, Spigot, and Paper are available
 - **Including [Pufferfish](https://github.com/pufferfish-gg/Pufferfish) and [Purpur](https://github.com/PurpurMC/Purpur)** - Provides multiple optimizations and customizations
+- **Including [Plasma](https://github.com/PlazmaMC/Plazma)** - Provides multiple optimizations and customizations
 
 ## ⚖️ License
 - This project and all patches are licensed under the [MIT license](LICENSE.md) unless otherwise noted in the patch headers.
